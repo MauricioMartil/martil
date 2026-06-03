@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mauricio Martil — Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Serif+Display:ital@0;1&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1e3a5f;
+    --blue: #2d6a9f;
+    --blue-mid: #4a90c4;
+    --blue-light: #d6e8f5;
+    --slate: #5a7a99;
+    --gray-dark: #2c2c2a;
+    --gray: #6b7280;
+    --gray-light: #f0f4f8;
+    --warm-white: #fafaf8;
+    --warm-cream: #f5f2ed;
+    --accent: #e8734a;
+    --text: #1a1a2e;
+    --card-bg: rgba(255,255,255,0.92);
+    --card-border: rgba(30,58,95,0.12);
+    --shadow: rgba(30,58,95,0.1);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === FLOATING PARTICLES BG === */
+  .bg-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.06;
+    animation: float linear infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.06; }
+    90% { opacity: 0.06; }
+    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* === NAV === */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(250,250,248,0.88);
+    border-bottom: 1px solid var(--card-border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+    cursor: pointer;
+  }
+  .nav-name span { color: var(--accent); }
+  .nav-links { display: flex; gap: 0.25rem; }
+  .nav-btn {
+    background: none; border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--gray);
+    padding: 0.45rem 0.9rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--blue-light);
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  /* === MAIN LAYOUT === */
+  main {
+    padding-top: 64px;
+    position: relative; z-index: 1;
+  }
+
+  /* === SECTIONS === */
+  .section {
+    display: none;
+    min-height: calc(100vh - 64px);
+    padding: 3rem 2rem 4rem;
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeIn 0.4s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === HERO === */
+  .hero {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; align-items: center;
+    min-height: calc(100vh - 64px);
+    padding: 2rem;
+    max-width: 1000px; margin: 0 auto;
+  }
+  .hero-left h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+  .hero-left h1 em {
+    font-style: italic;
+    color: var(--blue-mid);
+  }
+  .hero-tagline {
+    font-size: 1.05rem;
+    color: var(--slate);
+    margin: 1rem 0 1.5rem;
+    line-height: 1.6;
+  }
+  .hero-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+  .chip {
+    background: var(--blue-light);
+    color: var(--navy);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+  }
+  .chip.accent { background: #fde8de; color: #8b3a1e; }
+  .hero-cta { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: var(--blue); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--navy);
+    border: 1.5px solid var(--card-border);
+    padding: 0.75rem 1.5rem;
+    border-radius: 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--navy); background: var(--blue-light); }
+
+  /* Avatar area */
+  .hero-right {
+    display: flex; align-items: center; justify-content: center;
+  }
+  .avatar-wrap {
+    position: relative;
+    width: 280px; height: 280px;
+  }
+  .avatar-circle {
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue-light) 0%, #c8dff0 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid rgba(45,106,159,0.2);
+  }
+  .avatar-initials {
+    font-family: 'DM Serif Display', serif;
+    font-size: 5rem;
+    color: var(--navy);
+    opacity: 0.4;
+    user-select: none;
+  }
+  .avatar-hint {
+    position: absolute;
+    bottom: -0.5rem; left: 50%; transform: translateX(-50%);
+    font-size: 0.72rem; color: var(--gray);
+    white-space: nowrap;
+  }
+  /* Floating badges */
+  .badge-float {
+    position: absolute;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.78rem;
+    color: var(--navy);
+    font-weight: 500;
+    box-shadow: 0 4px 12px var(--shadow);
+    animation: bobble 3s ease-in-out infinite;
+  }
+  .badge-float:nth-child(2) { top: 10px; right: -10px; animation-delay: 0.5s; }
+  .badge-float:nth-child(3) { bottom: 30px; left: -20px; animation-delay: 1s; }
+  .badge-float:nth-child(4) { top: 50%; right: -30px; transform: translateY(-50%); animation-delay: 1.5s; }
+  @keyframes bobble {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .badge-float:nth-child(4) {
+    animation: bobble2 3s ease-in-out 1.5s infinite;
+  }
+  @keyframes bobble2 {
+    0%, 100% { transform: translateY(-50%); }
+    50% { transform: translateY(calc(-50% - 6px)); }
+  }
+
+  /* === ABOUT === */
+  .section-header {
+    margin-bottom: 2.5rem;
+  }
+  .section-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+  .section-header p {
+    color: var(--slate);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .info-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px var(--shadow);
+  }
+  .info-card.full { grid-column: 1 / -1; }
+  .card-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--blue-mid);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+  .card-body {
+    font-size: 0.9rem;
+    color: var(--gray);
+    line-height: 1.7;
+  }
+  .interest-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+  .interest-tag {
+    background: var(--gray-light);
+    color: var(--gray-dark);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 12px;
+  }
+
+  /* === CV === */
+  .cv-section { margin-bottom: 2.5rem; }
+  .cv-section-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--blue-mid);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .cv-item {
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 0 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px dashed rgba(30,58,95,0.08);
+  }
+  .cv-item:last-child { border-bottom: none; margin-bottom: 0; }
+  .cv-date {
+    font-size: 0.78rem;
+    color: var(--slate);
+    white-space: nowrap;
+    padding-top: 0.15rem;
+    min-width: 90px;
+  }
+  .cv-role { font-weight: 500; font-size: 0.95rem; color: var(--navy); }
+  .cv-org { font-size: 0.85rem; color: var(--blue-mid); margin: 0.2rem 0; }
+  .cv-desc { font-size: 0.85rem; color: var(--gray); line-height: 1.6; margin-top: 0.3rem; }
+  .skills-grid {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem;
+  }
+  .skill-pill {
+    background: var(--blue-light);
+    color: var(--navy);
+    font-size: 0.78rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 16px;
+    font-weight: 500;
+  }
+  .skill-pill.soft { background: var(--warm-cream); color: var(--gray-dark); }
+
+  /* === PORTFOLIO === */
+  .photo-filters {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+  }
+  .filter-btn {
+    background: none;
+    border: 1px solid var(--card-border);
+    color: var(--gray);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    padding: 0.4rem 1rem;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+  }
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  .photo-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 4/3;
+    background: var(--blue-light);
+    transition: transform 0.2s;
+  }
+  .photo-item:nth-child(3n+1) { aspect-ratio: 3/4; grid-row: span 1; }
+  .photo-item:hover { transform: scale(1.02); z-index: 2; }
+  .photo-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.5rem;
+  }
+  .photo-icon { font-size: 2rem; opacity: 0.4; }
+  .photo-label-small { font-size: 0.72rem; color: var(--slate); }
+  .photo-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(20,40,70,0.7) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.25s;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 1rem;
+  }
+  .photo-item:hover .photo-overlay { opacity: 1; }
+  .photo-name { color: white; font-size: 0.85rem; font-weight: 500; }
+  .photo-cat { color: rgba(255,255,255,0.7); font-size: 0.72rem; }
+
+  /* Lightbox */
+  .lightbox {
+    display: none; position: fixed; inset: 0;
+    background: rgba(10,20,40,0.92);
+    z-index: 200;
+    align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox-inner {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 480px; width: 100%;
+    text-align: center;
+    position: relative;
+  }
+  .lightbox-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none;
+    font-size: 1.3rem; cursor: pointer; color: var(--gray);
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lightbox-close:hover { background: var(--gray-light); }
+  .lightbox-img-area {
+    width: 100%; aspect-ratio: 4/3;
+    background: var(--blue-light);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; margin-bottom: 1rem;
+  }
+  .lightbox-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--navy); }
+  .lightbox-sub { font-size: 0.85rem; color: var(--slate); margin-top: 0.25rem; }
+
+  /* === CONTACT === */
+  .contact-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    align-items: start;
+  }
+  .contact-left h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem; color: var(--navy); margin-bottom: 1rem;
+  }
+  .contact-left p { color: var(--gray); line-height: 1.7; margin-bottom: 1.5rem; font-size: 0.92rem; }
+  .social-links { display: flex; flex-direction: column; gap: 0.75rem; }
+  .social-link {
+    display: flex; align-items: center; gap: 0.75rem;
+    color: var(--slate); font-size: 0.9rem;
+    text-decoration: none; transition: color 0.2s;
+  }
+  .social-link:hover { color: var(--blue); }
+  .social-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--blue-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-label { font-size: 0.8rem; font-weight: 500; color: var(--navy); }
+  .form-input, .form-textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.65rem 1rem;
+    border: 1.5px solid var(--card-border);
+    border-radius: 10px;
+    background: white;
+    color: var(--text);
+    transition: border-color 0.2s;
+    outline: none;
+    resize: none;
+  }
+  .form-input:focus, .form-textarea:focus {
+    border-color: var(--blue-mid);
+  }
+  .form-textarea { min-height: 120px; }
+  .submit-btn {
+    background: var(--navy); color: white;
+    border: none; border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+    align-self: flex-start;
+  }
+  .submit-btn:hover { background: var(--blue); transform: translateY(-1px); }
+  .submit-btn:active { transform: scale(0.98); }
+  .form-success {
+    display: none;
+    background: #e8f5e9; color: #2e7d32;
+    padding: 0.75rem 1rem;
+    border-radius: 10px; font-size: 0.88rem;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--blue-light); border-radius: 3px; }
+
+  /* responsive */
+  @media (max-width: 680px) {
+    .hero { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+    .hero-right { display: none; }
+    .hero-cta { justify-content: center; }
+    .about-grid { grid-template-columns: 1fr; }
+    .photo-grid { grid-template-columns: repeat(2, 1fr); }
+    .contact-wrap { grid-template-columns: 1fr; }
+    nav { padding: 0 1rem; }
+    .nav-links .nav-btn { font-size: 0.75rem; padding: 0.4rem 0.65rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating particles -->
+<div class="bg-canvas" id="bgCanvas"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-name" onclick="showSection('home')">Mauricio<span>Martil</span></div>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="showSection('home')">Home</button>
+    <button class="nav-btn" onclick="showSection('about')">About</button>
+    <button class="nav-btn" onclick="showSection('cv')">CV</button>
+    <button class="nav-btn" onclick="showSection('portfolio')">Portfolio</button>
+    <button class="nav-btn" onclick="showSection('contact')">Contact</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HOME -->
+  <div id="home" class="section active" style="display:block; padding:0; max-width:100%;">
+    <div class="hero">
+      <div class="hero-left">
+        <p style="font-size:0.85rem; color:var(--slate); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.75rem;">👋 Hello, I'm</p>
+        <h1>Mauricio <em>Martil</em></h1>
+        <p class="hero-tagline">Computational scientist &amp; quantitative researcher — applying statistical modeling and data analysis pipelines to cancer genomics and oncology research.</p>
+        <div class="hero-chips">
+          <span class="chip">📍 Dallas, TX</span>
+          <span class="chip">💼 Open to Work</span>
+          <span class="chip accent">🧬 Cancer Genomics</span>
+        </div>
+        <div class="hero-cta">
+          <button class="btn-primary" onclick="showSection('cv')">View my CV</button>
+          <button class="btn-outline" onclick="showSection('portfolio')">See my photos</button>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="avatar-wrap">
+          <div class="avatar-circle">
+            <span class="avatar-initials">MM</span>
+          </div>
+          <div class="badge-float">✨ Available for hire</div>
+          <div class="badge-float">🧬 Cancer Genomics</div>
+          <div class="badge-float">🌍 Dallas, TX</div>
+          <p class="avatar-hint">← replace with your photo</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="about" class="section">
+    <div class="section-header">
+      <h2>About me</h2>
+      <p>A little bit about who I am, what I do, and what makes me tick.</p>
+    </div>
+    <div class="about-grid">
+      <div class="info-card full">
+        <div class="card-label">Who I am</div>
+        <p class="card-body" style="font-size:1rem; line-height:1.8;">
+          Hi! I'm <strong style="color:var(--navy)">Mauricio Gerardo Martil de la Garza</strong>, a computational scientist and quantitative researcher with 5+ years of experience applying statistical modeling, data analysis pipelines, and biological data interpretation to cancer research programs. I'm a published researcher in oncology genomics and a passionate communicator of complex scientific findings to cross-functional teams.
+        </p>
+      </div>
+      <div class="info-card">
+        <div class="card-label">Education</div>
+        <div class="card-title">M.S., Chemistry (Computational)</div>
+        <div class="card-body">UT Dallas · GPA 3.64 · Expected May 2026</div>
+      </div>
+      <div class="info-card">
+        <div class="card-label">Currently</div>
+        <div class="card-title">Research Assistant</div>
+        <div class="card-body">Cisneros Research Group, UT Dallas · Since Sep 2021</div>
+      </div>
+      <div class="info-card full">
+        <div class="card-label">Beyond work</div>
+        <div class="card-body">When I'm not crunching data or running simulations, I enjoy exploring new places, staying curious about science and technology, and connecting with people across disciplines.</div>
+        <div class="interest-tags">
+          <span class="interest-tag">🧬 Cancer Genomics</span>
+          <span class="interest-tag">🐍 Python</span>
+          <span class="interest-tag">📊 Data Visualization</span>
+          <span class="interest-tag">✈️ Travel</span>
+          <span class="interest-tag">☕ Coffee</span>
+          <span class="interest-tag">🌍 Languages</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CV -->
+  <div id="cv" class="section">
+    <div class="section-header">
+      <h2>Curriculum Vitae</h2>
+      <p>My professional journey so far — feel free to <a href="#" style="color:var(--blue);">download a PDF copy</a>.</p>
+    </div>
+
+    <div class="cv-section">
+      <div class="cv-section-title">Work Experience</div>
+      <div class="cv-item">
+        <div class="cv-date">Sep 2021 – Present</div>
+        <div>
+          <div class="cv-role">Research Assistant — Computational Biostatistics &amp; Cancer Genomics</div>
+          <div class="cv-org">Cisneros Research Group, UT Dallas · Richardson, TX</div>
+          <div class="cv-desc">Designed population-level statistical analysis of 12+ cancer-associated POT1 variants in a melanoma case-control cohort (50,000+ data points; KS &amp; JSD tests) — published in the Journal of Medical Genetics. Developed scikit-learn predictive models to classify POT1 allele phenotypes; contributed to a second study under review at Cell. Built automated QA pipelines in Python and R Shiny for large-scale biological datasets.</div>
+        </div>
+      </div>
+      <div class="cv-item">
+        <div class="cv-date">Sep 2019 – Jun 2021</div>
+        <div>
+          <div class="cv-role">Undergraduate Research Assistant — Computational Data Analysis</div>
+          <div class="cv-org">Sanchez Group, CIMAV · Monterrey, Mexico</div>
+          <div class="cv-desc">Applied DFT-based computational methods and custom Python data pipelines to analyze structural and adsorption properties of novel materials across 1,000+ output files. Built automated scripts for data parsing, statistical analysis, and QC — reducing post-processing time from days to hours.</div>
+        </div>
+      </div>
+      <div class="cv-item">
+        <div class="cv-date">Jun – Sep 2019</div>
+        <div>
+          <div class="cv-role">Summer Research Assistant (MITACS Fellow) — High-Throughput Screening</div>
+          <div class="cv-org">Gauld Group, University of Windsor · Windsor, Canada</div>
+          <div class="cv-desc">Screened 12,000+ molecular candidates using high-throughput computational methods; identified 15 lead compounds. Developed and validated predictive models using MD simulations; automated data parsing and statistical summary generation, reducing analysis time by 60%.</div>
+        </div>
+      </div>
+      <div class="cv-item">
+        <div class="cv-date">Jan 2017 – Jan 2020</div>
+        <div>
+          <div class="cv-role">Undergraduate Research Assistant — Analytical Characterization &amp; Data Analysis</div>
+          <div class="cv-org">Videa-Martinez Group, Tec de Monterrey · Monterrey, Mexico</div>
+          <div class="cv-desc">Monitored real-time phase transitions of pharmaceutical polymorphs (Sulfathiazole) using a dual DTA-Raman apparatus; analyzed spectral data across a 210°C range to characterize API stability. Presented findings at the 2018 GCURS at Rice University.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cv-section">
+      <div class="cv-section-title">Education</div>
+      <div class="cv-item">
+        <div class="cv-date">May 2026</div>
+        <div>
+          <div class="cv-role">M.S., Chemistry (Computational &amp; Quantitative Focus)</div>
+          <div class="cv-org">The University of Texas at Dallas · Richardson, TX</div>
+          <div class="cv-desc">GPA: 3.64 · Coursework: Statistical Mechanics, Quantitative Data Analysis, Computational Methods, Bioinformatics · Thesis: Computational and statistical characterization of cancer-associated protein mutations in telomere maintenance.</div>
+        </div>
+      </div>
+      <div class="cv-item">
+        <div class="cv-date">Jun 2021</div>
+        <div>
+          <div class="cv-role">B.S., Chemistry &amp; Nanotechnology Engineering</div>
+          <div class="cv-org">Tecnológico de Monterrey · Monterrey, Mexico</div>
+          <div class="cv-desc">GPA: 3.5 · Scholarships: Red de Filantropía del Tec, Beca Socioeconómica, MITACS Globalink Internship.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cv-section">
+      <div class="cv-section-title">Publications &amp; Presentations</div>
+      <div class="cv-item">
+        <div class="cv-date">Published</div>
+        <div>
+          <div class="cv-role">Journal of Medical Genetics</div>
+          <div class="cv-desc">Population-based analysis of POT1 variants in a cutaneous melanoma case-control cohort.</div>
+        </div>
+      </div>
+      <div class="cv-item">
+        <div class="cv-date">In Review</div>
+        <div>
+          <div class="cv-role">Cell</div>
+          <div class="cv-desc">A Functional Spectrum of POT1 Alleles Dictates Genotype-Phenotype Associations — statistical characterization of variant pathogenicity spectrum.</div>
+        </div>
+      </div>
+      <div class="cv-item">
+        <div class="cv-date">2024 &amp; 2023</div>
+        <div>
+          <div class="cv-role">ACS FALL Sci-Mix</div>
+          <div class="cv-desc">Computational and statistical characterization of cancer-associated variant phenotypes for POT1.</div>
+        </div>
+      </div>
+      <div class="cv-item">
+        <div class="cv-date">2025</div>
+        <div>
+          <div class="cv-role">TINKER WORKSHOP (International)</div>
+          <div class="cv-desc">Computational Study of Cancer-Associated Mutation H186P on APOBEC3G.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cv-section">
+      <div class="cv-section-title">Technical Skills</div>
+      <div class="skills-grid">
+        <span class="skill-pill">Python (pandas, scikit-learn, NumPy, SciPy)</span>
+        <span class="skill-pill">R (Shiny, ggplot2, dplyr)</span>
+        <span class="skill-pill">Bash / UNIX</span>
+        <span class="skill-pill">HPC / SLURM</span>
+        <span class="skill-pill">Docker</span>
+        <span class="skill-pill">Git</span>
+        <span class="skill-pill">AlphaFold3</span>
+        <span class="skill-pill">AMBER / OpenMM</span>
+        <span class="skill-pill">PLUMED</span>
+        <span class="skill-pill">RDKit</span>
+        <span class="skill-pill">Bioinformatics Pipelines</span>
+        <span class="skill-pill">KS / JSD Statistics</span>
+        <span class="skill-pill">ML Classification</span>
+        <span class="skill-pill">Simulation Studies</span>
+      </div>
+    </div>
+
+    <div class="cv-section">
+      <div class="cv-section-title">Soft Skills</div>
+      <div class="skills-grid">
+        <span class="skill-pill soft">Scientific Communication</span>
+        <span class="skill-pill soft">Cross-functional Collaboration</span>
+        <span class="skill-pill soft">Data Storytelling</span>
+        <span class="skill-pill soft">Attention to Detail</span>
+        <span class="skill-pill soft">Adaptability</span>
+      </div>
+    </div>
+
+    <div class="cv-section">
+      <div class="cv-section-title">Languages</div>
+      <div class="skills-grid">
+        <span class="skill-pill">Spanish — Native</span>
+        <span class="skill-pill">English — Fluent</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PORTFOLIO -->
+  <div id="portfolio" class="section">
+    <div class="section-header">
+      <h2>Photography</h2>
+      <p>A selection of my favourite shots — captured during travels, walks, and quiet moments.</p>
+    </div>
+
+    <div class="photo-filters">
+      <button class="filter-btn active" onclick="filterPhotos('all', this)">All</button>
+      <button class="filter-btn" onclick="filterPhotos('landscape', this)">Landscape</button>
+      <button class="filter-btn" onclick="filterPhotos('street', this)">Street</button>
+      <button class="filter-btn" onclick="filterPhotos('portrait', this)">Portrait</button>
+      <button class="filter-btn" onclick="filterPhotos('nature', this)">Nature</button>
+    </div>
+
+    <div class="photo-grid" id="photoGrid">
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div id="contact" class="section">
+    <div class="section-header">
+      <h2>Get in touch</h2>
+      <p>Whether you'd like to work together or just say hi — my inbox is always open.</p>
+    </div>
+    <div class="contact-wrap">
+      <div class="contact-left">
+        <h3>Let's talk! 💬</h3>
+        <p>I'm currently open to new opportunities. If you have a project in mind, a question, or just want to connect — send me a message and I'll get back to you soon.</p>
+        <div class="social-links">
+          <a href="mailto:mauriciogmartil@gmail.com" class="social-link">
+            <div class="social-icon">✉️</div>
+            mauriciogmartil@gmail.com
+          </a>
+          <a href="https://linkedin.com/in/mauriciomartil" class="social-link" target="_blank" rel="noopener">
+            <div class="social-icon">💼</div>
+            linkedin.com/in/mauriciomartil
+          </a>
+          <a href="tel:9409998506" class="social-link">
+            <div class="social-icon">📞</div>
+            940-999-8506
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="contact-form">
+          <div class="form-group">
+            <label class="form-label">Your name</label>
+            <input type="text" class="form-input" placeholder="Jane Smith" id="contactName">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email address</label>
+            <input type="email" class="form-input" placeholder="jane@example.com" id="contactEmail">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" placeholder="Tell me about your project or just say hello..." id="contactMsg"></textarea>
+          </div>
+          <button class="submit-btn" onclick="submitForm()">Send message →</button>
+          <div class="form-success" id="formSuccess">✓ Message sent! I'll be in touch soon.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <div class="lightbox-img-area" id="lbImg">📷</div>
+    <div class="lightbox-title" id="lbTitle">Photo Title</div>
+    <div class="lightbox-sub" id="lbSub">Category · Location</div>
+  </div>
+</div>
+
+<script>
+const photos = [
+  { title: "Golden Hour", cat: "landscape", loc: "Mountains", emoji: "🏔️", color: "#e8c49a" },
+  { title: "City Life", cat: "street", loc: "Downtown", emoji: "🏙️", color: "#b8c8d8" },
+  { title: "Morning Mist", cat: "nature", loc: "Forest", emoji: "🌿", color: "#a8c8a0" },
+  { title: "Harbour View", cat: "landscape", loc: "Coast", emoji: "⛵", color: "#94b8d4" },
+  { title: "Street Corner", cat: "street", loc: "Old Town", emoji: "🚶", color: "#c4b8ac" },
+  { title: "Wildflowers", cat: "nature", loc: "Countryside", emoji: "🌸", color: "#e0b8c0" },
+  { title: "Sunset Bay", cat: "landscape", loc: "Beach", emoji: "🌅", color: "#f0c090" },
+  { title: "Urban Geometry", cat: "street", loc: "City Centre", emoji: "📐", color: "#b0b8c8" },
+  { title: "Portrait", cat: "portrait", loc: "Studio", emoji: "🎭", color: "#c8b8d0" },
+];
+
+function renderPhotos(filter) {
+  const grid = document.getElementById('photoGrid');
+  const filtered = filter === 'all' ? photos : photos.filter(p => p.cat === filter);
+  grid.innerHTML = filtered.map((p, i) => `
+    <div class="photo-item" style="background:${p.color};" onclick="openLightbox(${photos.indexOf(p)})">
+      <div class="photo-placeholder">
+        <div class="photo-icon">${p.emoji}</div>
+        <div class="photo-label-small">Add your photo here</div>
+      </div>
+      <div class="photo-overlay">
+        <div class="photo-name">${p.title}</div>
+        <div class="photo-cat">${p.cat} · ${p.loc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterPhotos(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPhotos(cat);
+}
+
+function openLightbox(idx) {
+  const p = photos[idx];
+  document.getElementById('lbImg').innerHTML = `<span style="font-size:4rem;">${p.emoji}</span>`;
+  document.getElementById('lbImg').style.background = p.color;
+  document.getElementById('lbTitle').textContent = p.title;
+  document.getElementById('lbSub').textContent = `${p.cat.charAt(0).toUpperCase()+p.cat.slice(1)} · ${p.loc}`;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox(e) {
+  if (!e || e.target === document.getElementById('lightbox') || e.target.classList.contains('lightbox-close')) {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const sec = document.getElementById(id);
+  sec.classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const labels = ['home','about','cv','portfolio','contact'];
+  const idx = labels.indexOf(id);
+  if (idx >= 0) btns[idx].classList.add('active');
+  if (id === 'portfolio') renderPhotos('all');
+  window.scrollTo(0,0);
+}
+
+function submitForm() {
+  const n = document.getElementById('contactName').value;
+  const e = document.getElementById('contactEmail').value;
+  const m = document.getElementById('contactMsg').value;
+  if (!n || !e || !m) { alert('Please fill in all fields!'); return; }
+  document.getElementById('formSuccess').style.display = 'block';
+  document.getElementById('contactName').value = '';
+  document.getElementById('contactEmail').value = '';
+  document.getElementById('contactMsg').value = '';
+  setTimeout(() => document.getElementById('formSuccess').style.display = 'none', 4000);
+}
+
+// Particles
+(function() {
+  const canvas = document.getElementById('bgCanvas');
+  const colors = ['#1e3a5f','#2d6a9f','#4a90c4','#e8734a'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 60 + 20;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*20+15}s;
+      animation-delay:${Math.random()*-20}s;
+    `;
+    canvas.appendChild(p);
+  }
+})();
+</script>
+</body>
+</html>
